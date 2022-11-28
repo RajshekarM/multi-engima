@@ -1,14 +1,17 @@
 package self.learning;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.locks.Lock;
-
 public class MyQueue {
     
     private static final Object Lock = new Object();
-    Queue<Integer> myQueue;
+    Queue<Integer> NEW_STATE;
+    Queue<Integer> READY_STATE;
+    Queue<Integer> RUN_STATE;
+    Queue<Integer> WAIT_STATE;
+    Queue<Integer> SUSPENDED_STATE;
+    
+
     int MAX_SIZE;
     int MIN_SIZE;
 
@@ -16,51 +19,69 @@ public class MyQueue {
     {
         this.MAX_SIZE = max;
         this.MIN_SIZE = min;
-        myQueue = new LinkedList<>();
+        NEW_STATE = new LinkedList<>();
+        READY_STATE = new LinkedList<>();
     }
 
-    public void addQueue(int data)
+    // New State: add to Memory
+    public void addQueue(int data) throws InterruptedException
     {
         synchronized(Lock)
-        {
-            while(true)
-            {
-                if(myQueue.size()==MAX_SIZE)
-                    try {
-                        System.out.println("Capacity full : waiting for you to read");
-                        Lock.wait();
-                    }
-                     catch (InterruptedException e){  e.printStackTrace();}
-                else 
-                {
-                    System.out.println("I am writing data to Queue:");
-                    Lock.notify();
-                    myQueue.add(data);
-                }
-             }
+        { 
+        System.out.println(Thread.currentThread().getName()+":Acquired Lock");
+           while(true)
+            { 
+              if(NEW_STATE.size()>=MAX_SIZE)
+              {
+                System.out.println(Thread.currentThread().getName() + "Queue Size is full");
+                
+                System.out.println(Thread.currentThread().getName() + ":Notify to awaken other threads");
+                 System.out.println(Thread.currentThread().getName() + "Going to waiting state untill someone awakens");
+                 Lock.wait(5000); 
+              }
+              else
+              {
+                NEW_STATE.add(data);
+                Lock.notify();
+              }
+             
+            }
+             
+          
         }
        
     }
 
-    public void DeQueue(int data)
+
+    //Ready State: put into cache 
+    public void DeQueue() throws InterruptedException
     { 
         synchronized(Lock)
-        {
+        {          
+            System.out.println(Thread.currentThread().getName()+":Acquired Lock");
+
             while(true)
             {
-                if(myQueue.size()==MIN_SIZE)
-                    try {
-                        System.out.println("Capacity Nill : waiting for you to write");
-                        Lock.wait();
-                    }
-                     catch (InterruptedException e){  e.printStackTrace();}
-                else 
+                if(NEW_STATE.size()==MIN_SIZE)
                 {
-                    System.out.println("I am reading data from Queue:");
-                    Lock.notify();
-                    myQueue.add(data);
+                    System.out.println(Thread.currentThread().getName() + "Queue Size is zero");
+                    
+                    System.out.println(Thread.currentThread().getName() + ":Notify to awaken other threads");
+  
+                    System.out.println(Thread.currentThread().getName() + "Going to waiting state untill someone awakens");
+                    Lock.wait(5000);
                 }
-             }
+                else
+                {
+                    System.out.println("Removing Data from the Queue"+  NEW_STATE.remove());
+                    READY_STATE.add(NEW_STATE.remove());
+                    Lock.notify();
+                }
+
+            }
+         
+            
+     
         }
     }
 
