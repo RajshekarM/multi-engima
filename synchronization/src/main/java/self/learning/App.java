@@ -7,7 +7,7 @@ public class App
     
       int no = Runtime.getRuntime().availableProcessors();
       System.out.println("Cores avaliable:" + no);
-
+      
       Executors ex = new Executors();
       ex.Start();
 

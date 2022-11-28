@@ -39,7 +39,8 @@ public class AMDProcessor implements Processor {
 
     @Override
     public void setTask(Task task) {
-       tasksQueue.add(task);   
+       tasksQueue.add(task); 
+       System.out.println("Task added to AMD procesor. No of Tasks = " + tasksQueue.size() ) ;
     }
 
     @Override

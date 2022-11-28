@@ -1,6 +1,6 @@
 package self.learning;
 
-public class Task {
+public class Task implements Comparable<Task>{
     
    
    String taskName;
@@ -10,5 +10,17 @@ public class Task {
    {
     this.taskName = TaskName;
    }
+
+
+
+private String getName() {
+   return this.taskName;
+}
+
+@Override
+public int compareTo(Task task) {
+ 
+   return taskName.compareTo(task.getName());
+}
   
 }
