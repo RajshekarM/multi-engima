@@ -1,5 +1,10 @@
 package self.learning;
 
-public class Consumer {
-    
+public class Consumer implements Runnable{
+
+    @Override
+    public void run() {
+     
+        
+    }
 }

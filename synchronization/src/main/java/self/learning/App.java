@@ -1,13 +1,16 @@
 package self.learning;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws InterruptedException
     {
-        System.out.println( "Hello World!" );
+    
+      int no = Runtime.getRuntime().availableProcessors();
+      System.out.println("Cores avaliable:" + no);
+      
+      Executors ex = new Executors();
+      ex.Start();
+
+        
     }
 }
